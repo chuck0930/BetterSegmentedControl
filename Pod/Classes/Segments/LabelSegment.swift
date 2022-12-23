@@ -30,7 +30,10 @@ open class LabelSegment: BetterSegmentedControlSegment {
     public let selectedFont: UIFont
     public let selectedTextColor: UIColor
     public let selectedBackgroundColor: UIColor
-    
+    public let selectedUnderlineView: UIImageView
+    public let selectedUnderlineBorder: CGFloat
+    public let selectedUnderlineColor: UIColor
+  
     private let numberOfLines: Int
     private let accessibilityIdentifier: String?
     
@@ -43,7 +46,9 @@ open class LabelSegment: BetterSegmentedControlSegment {
                 selectedBackgroundColor: UIColor? = nil,
                 selectedFont: UIFont? = nil,
                 selectedTextColor: UIColor? = nil,
-                accessibilityIdentifier: String? = nil) {
+                accessibilityIdentifier: String? = nil,
+                selectedUnderlineBorder: CGFloat = 0,
+                selectedUnderlineColor: UIColor? = nil) {
         self.text = text
         self.numberOfLines = numberOfLines
         self.normalBackgroundColor = normalBackgroundColor ?? DefaultValues.normalBackgroundColor
@@ -53,6 +58,20 @@ open class LabelSegment: BetterSegmentedControlSegment {
         self.selectedFont = selectedFont ?? DefaultValues.selectedFont
         self.selectedTextColor = selectedTextColor ?? DefaultValues.selectedTextColor
         self.accessibilityIdentifier = accessibilityIdentifier
+        self.selectedUnderlineView = UIImageView()
+        self.selectedUnderlineBorder = selectedUnderlineBorder
+        self.selectedUnderlineColor = selectedUnderlineColor ?? DefaultValues.selectedBackgroundColor
+    }
+  
+    private func updateUnderline(border:CGFloat, color:UIColor?, target:UIView) {
+        target.addSubview(selectedUnderlineView)
+        selectedUnderlineView.backgroundColor = color!
+        
+        selectedUnderlineView.translatesAutoresizingMaskIntoConstraints = false
+        selectedUnderlineView.leftAnchor.constraint(equalTo: target.leftAnchor).isActive = true
+        selectedUnderlineView.rightAnchor.constraint(equalTo: target.rightAnchor).isActive = true
+        selectedUnderlineView.bottomAnchor.constraint(equalTo: target.bottomAnchor).isActive = true
+        selectedUnderlineView.heightAnchor.constraint(equalToConstant: border).isActive = true
     }
     
     // MARK: BetterSegmentedControlSegment
@@ -78,7 +97,9 @@ open class LabelSegment: BetterSegmentedControlSegment {
                           backgroundColor: UIColor,
                           font: UIFont,
                           textColor: UIColor,
-                          accessibilityIdentifier: String?) -> UILabel {
+                          accessibilityIdentifier: String?,
+                          underlineBorder: CGFloat = 0,
+                          underlineColor: UIColor? = nil) -> UILabel {
         let label = UILabel()
         label.text = text
         label.numberOfLines = numberOfLines
@@ -88,6 +109,10 @@ open class LabelSegment: BetterSegmentedControlSegment {
         label.lineBreakMode = .byTruncatingTail
         label.textAlignment = .center
         label.accessibilityIdentifier = accessibilityIdentifier
+      
+        if underlineBorder > 0 {
+            updateUnderline(border: underlineBorder, color: underlineColor, target: label)
+        }
         return label
     }
 }
@@ -100,7 +125,9 @@ public extension LabelSegment {
                         normalTextColor: UIColor? = nil,
                         selectedBackgroundColor: UIColor? = nil,
                         selectedFont: UIFont? = nil,
-                        selectedTextColor: UIColor? = nil) -> [BetterSegmentedControlSegment] {
+                        selectedTextColor: UIColor? = nil,
+                        selectedUnderlineBorder: CGFloat = 0,
+                        selectedUnderlineColor: UIColor? = nil) -> [BetterSegmentedControlSegment] {
         titles.map {
             LabelSegment(text: $0,
                          numberOfLines: numberOfLines,
@@ -109,7 +136,9 @@ public extension LabelSegment {
                          normalTextColor: normalTextColor,
                          selectedBackgroundColor: selectedBackgroundColor,
                          selectedFont: selectedFont,
-                         selectedTextColor: selectedTextColor)
+                         selectedTextColor: selectedTextColor,
+                         selectedUnderlineBorder: selectedUnderlineBorder,
+                         selectedUnderlineColor: selectedUnderlineColor)
         }
     }
 }
