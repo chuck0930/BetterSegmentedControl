@@ -91,7 +91,9 @@ open class LabelSegment: BetterSegmentedControlSegment {
                     backgroundColor: selectedBackgroundColor,
                     font: selectedFont,
                     textColor: selectedTextColor,
-                    accessibilityIdentifier: accessibilityIdentifier)
+                    accessibilityIdentifier: accessibilityIdentifier,
+                    underlineBorder: selectedUnderlineBorder,
+                    underlineColor: selectedUnderlineColor)
     }()
     open func createLabel(withText text: String?,
                           backgroundColor: UIColor,
